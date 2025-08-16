@@ -302,7 +302,30 @@ document.getElementById('updateStockBtn').addEventListener('click', async () => 
     refreshSelectOptions();
 });
 
-// Sell item
+    //sell items
+if (item.quantity >= sellQty) {
+    const saleTotal = sellQty * item.price;
+
+    const updatedSales = item.sales 
+        ? [...item.sales, { date: new Date().toISOString().slice(0, 10), qty: sellQty, total: saleTotal }]
+        : [{ date: new Date().toISOString().slice(0, 10), qty: sellQty, total: saleTotal }];
+
+    await db.items.update(id, {
+        quantity: item.quantity - sellQty,
+        sold: item.sold + sellQty,
+        sales: updatedSales
+    });
+
+    alert(`Sale recorded! Total: ₦${saleTotal.toFixed(2)}`);
+    document.getElementById('sellQuantity').value = "";
+    document.getElementById('sellBarcode').value = "";
+    refreshSelectOptions();
+} else {
+    alert("Not enough stock!");
+}
+    
+    
+    /*// Sell item
 document.getElementById('sellItemBtn').addEventListener('click', async () => {
     const sellBarcode = document.getElementById('sellBarcode').value;
     let id = parseInt(document.getElementById('sellItemSelect').value);
@@ -328,7 +351,7 @@ document.getElementById('sellItemBtn').addEventListener('click', async () => {
     } else {
         alert("Not enough stock!");
     }
-});
+});*/
 
 // Barcode scanner
 document.getElementById('startScannerBtn').addEventListener('click', () => {
