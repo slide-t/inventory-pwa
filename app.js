@@ -140,24 +140,6 @@ async function exportSalesPDF() {
   });
   doc.save("Sales_Report.pdf");
 }
-
-// Service Worker registration
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('Service Worker registered:', reg.scope))
-      .catch(err => console.log('SW registration failed:', err));
-  });
-}
-
-// Initialize page
-(async()=>{
-  await initData();
-  await loadInventory();
-  await calculateSales();
-  await loadSalesHistory();
-})();
-
 // Navigation - use button ids to avoid inline onclick issues
 document.getElementById('toStoreBtn').addEventListener('click', () => {
   // replace with your store page path if different
@@ -179,4 +161,25 @@ document.getElementById('logoutBtn').addEventListener('click', (e) => {
   // redirect to login (adjust path)
   window.location.href = 'index.html';
 });
+
+
+
+// Service Worker registration
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// Initialize page
+(async()=>{
+  await initData();
+  await loadInventory();
+  await calculateSales();
+  await loadSalesHistory();
+})();
+
+
 
