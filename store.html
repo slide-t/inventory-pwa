@@ -156,6 +156,26 @@ body.dark .low-stock {
 
 </main>
 
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2>Admin Login</h2>
+    <input type="password" id="adminPassword" placeholder="Enter password">
+    <button onclick="checkLogin()">Login</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</div>
+
+<!-- Welcome / Booting Modal -->
+<div id="welcomeModal" class="modal" style="display:none;">
+  <div class="welcome-content">
+    <img src="store-logo.png" alt="Store Logo" class="logo">
+    <div class="spinner"></div>
+    <p>Booting system...</p>
+  </div>
+</div>
+
+    
 <!-- JS Libraries -->
 <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
@@ -328,25 +348,10 @@ if ('serviceWorker' in navigator) {
 }
     </script>
 
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <h2>Admin Login</h2>
-    <input type="password" id="adminPassword" placeholder="Enter password">
-    <button onclick="checkLogin()">Login</button>
-    <div id="loginError" class="error"></div>
-  </div>
-</div>
-
-<!-- Welcome / Booting Modal -->
-<div id="welcomeModal" class="modal" style="display:none;">
-  <div class="welcome-content">
-    <img src="store-logo.png" alt="Store Logo" class="logo">
-    <div class="spinner"></div>
-    <p>Booting system...</p>
-  </div>
-</div>
     <script>
+// Define admin password
+const ADMIN_PASS = "Letmein12";
+
 function checkLogin(){
   const input = document.getElementById("adminPassword").value;
   if(input === ADMIN_PASS){
@@ -357,9 +362,13 @@ function checkLogin(){
     const welcome = document.getElementById("welcomeModal");
     welcome.style.display = "flex";
 
-    // Auto hide after 5s
+    // Fade out after 5 seconds
     setTimeout(()=>{
-      welcome.style.display = "none";
+      welcome.classList.add("fade-out");
+      setTimeout(()=>{ 
+        welcome.style.display = "none"; 
+        welcome.classList.remove("fade-out"); 
+      }, 1000); // matches fade-out duration
     }, 5000);
 
   } else {
