@@ -39,6 +39,41 @@ body.dark input, body.dark select, body.dark button { background:#333; color:whi
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
+/* Dark Mode */
+body.dark { 
+  background:#121212; 
+  color:#e0e0e0; 
+}
+
+body.dark section { 
+  background:#1e1e1e; 
+  color:#e0e0e0; 
+}
+
+body.dark h2,
+body.dark label,
+body.dark th {   /* ✅ headings, labels, table headers */
+  color:#ffffff;
+}
+
+body.dark input, 
+body.dark select, 
+body.dark button { 
+  background:#333; 
+  color:white; 
+  border:1px solid #555; 
+}
+
+body.dark button:hover {
+  background:#555;  /* ✅ softer hover in dark mode */
+}
+
+body.dark .low-stock {
+  background:#662222;  /* ✅ darker red background */
+  border:1px solid #aa4444;
+  color:#ffaaaa;
+}
+    
 </style>
 </head>
 <body>
