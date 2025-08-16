@@ -4,6 +4,7 @@ const FILES_TO_CACHE = [
   '/',
   '/store.html',
   '/admin.html',
+  '/index.html',  //login page
   '/style.css',       // if you separate CSS
   '/app.js',          // your main JS
   '/sw.js',
