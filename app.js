@@ -158,3 +158,25 @@ if('serviceWorker' in navigator){
   await loadSalesHistory();
 })();
 
+// Navigation - use button ids to avoid inline onclick issues
+document.getElementById('toStoreBtn').addEventListener('click', () => {
+  // replace with your store page path if different
+  window.location.href = 'store.html';
+});
+
+// Logout: clear session and redirect to access/login page
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  // Clear session/local storage items (adjust keys you use)
+  try {
+    localStorage.removeItem('adminSession'); // example key
+    sessionStorage.removeItem('adminSession');
+  } catch (err) { /* ignore */ }
+
+  // If you maintain cookies, clear relevant cookie(s) here (optional)
+  // document.cookie = 'your_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+  // redirect to login (adjust path)
+  window.location.href = 'index.html';
+});
+
