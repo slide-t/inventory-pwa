@@ -232,7 +232,44 @@ async function checkLowStock() {
 
     if (!hasLow) lowStockList.textContent = "No low stock items.";
 }
+// Add new item
+document.getElementById('addItemBtn').addEventListener('click', async () => {
+    const category = document.getElementById('category').value;
+    const subcategory = document.getElementById('subcategory').value;
+    const itemName = document.getElementById('itemName').value;
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    const quantity = parseInt(document.getElementById('quantity').value);
 
+    if (!category || !itemName || !quantity || !price) {
+        alert("Please fill all required fields (Category, Item, Price, Quantity)");
+        return;
+    }
+
+    const barcode = generateBarcode();
+    await db.items.add({
+        category,
+        subcategory,
+        itemName,
+        price,
+        quantity,
+        sold: 0,
+        barcode,
+        sales: []
+    });
+
+    alert(`Item added successfully! Barcode: ${barcode}`);
+    refreshSelectOptions();
+
+    // Clear fields
+    document.getElementById('category').value = "";
+    document.getElementById('subcategory').value = "";
+    document.getElementById('itemName').value = "";
+    document.getElementById('price').value = "";
+    document.getElementById('quantity').value = "";
+    document.getElementById('totalPrice').value = "";
+});
+
+/*          
 // Add new item
 document.getElementById('addItemBtn').addEventListener('click', async () => {
     const category = document.getElementById('category').value;
@@ -251,7 +288,8 @@ document.getElementById('addItemBtn').addEventListener('click', async () => {
     document.getElementById('itemName').value = "";
     document.getElementById('quantity').value = "";
 });
-
+*/
+  
 // Update stock
 document.getElementById('updateStockBtn').addEventListener('click', async () => {
     const id = parseInt(document.getElementById('updateItemSelect').value);
