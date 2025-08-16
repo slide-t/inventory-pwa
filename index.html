@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Inventory PWA - Admin Access</title>
 <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#222; color:white; height:100vh; display:flex; justify-content:center; align-items:center; }
-    #modal { background:#111; padding:30px; border-radius:10px; width:300px; box-shadow:0 5px 15px rgba(0,0,0,0.5); text-align:center; }
+   /* body { margin:0; font-family: Arial, sans-serif; background:#222; color:white; height:100vh; display:flex; justify-content:center; align-items:center; }
+    #modal { background:#111; padding:30px; border-radius:10px; width:300px; box-shadow:0 5px 15px rgba(0,0,0,0.5); text-align:center; }*/
     h2 { margin-top:0; }
     input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:none; font-size:1em; }
     button { width:100%; padding:10px; margin:5px 0; border:none; border-radius:5px; background:#4CAF50; color:white; font-size:1em; cursor:pointer; }
@@ -14,6 +14,31 @@
     #storeBtn { background:#555; }
     #storeBtn:hover { background:#777; }
     #error { color:#ff6666; font-size:0.9em; }
+    body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #222;
+  color: white;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* push content from the top instead of center */
+}
+
+#modal {
+  background: #111;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;          /* wider on mobile */
+  max-width: 500px;    /* limit on larger screens */
+  height: 50vh;        /* cover half page height */
+  margin-top: 10vh;    /* push it down a bit */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* center form inside */
+}
 </style>
 </head>
 <body>
