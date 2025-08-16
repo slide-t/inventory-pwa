@@ -29,7 +29,7 @@ button:hover { background:#45a049; }
 </head>
 <body><header>
 📦 Store Management
-<button id="logoutBtn" onclick="logout()">Logout</button>
+<!--<button id="logoutBtn" onclick="logout()">Logout</button>-->
 </header>
 <button id="darkModeSwitch" onclick="toggleDarkMode()">🌙</button><main>
 <section>
@@ -66,14 +66,18 @@ button:hover { background:#45a049; }
 <h2>⚠ Low Stock Alerts</h2>
 <div id="lowStockList">No low stock items.</div>
 </section>
-</main><!-- Login Modal --><div id="loginModal" class="modal">
+</main>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
   <div class="modal-content">
     <h2>Admin Login</h2>
     <input type="password" id="adminPassword" placeholder="Enter password">
     <button onclick="checkLogin()">Login</button>
     <div id="loginError" class="error"></div>
   </div>
-</div><!-- Welcome / Booting Modal --><div id="welcomeModal" class="modal" style="background:rgba(0,0,0,0.9);">
+</div>
+  <!-- Welcome / Booting Modal -->
+  <div id="welcomeModal" class="modal" style="background:rgba(0,0,0,0.9);">
   <div class="welcome-content">
     <img src="store-logo.png" alt="Store Logo" class="logo">
     <div class="spinner"></div>
@@ -263,5 +267,66 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('SW registration failed:', err));
     });
 }
-</script></body>
+</script>
+<!-- Logout Button -->
+<button id="logoutBtn" onclick="logout()" title="Logout">⎋</button>
+
+<style>
+/* Floating Logout Button */
+#logoutBtn {
+  position: fixed;
+  top: 50%;
+  right: -80px; /* initially hidden off-screen */
+  transform: translateY(-50%);
+  background: #4CAF50;
+  color: white;
+  font-size: 18px;
+  padding: 15px 25px;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+
+  /* Half pill shape */
+  border-top-left-radius: 25%;
+  border-bottom-left-radius: 25%;
+
+  /* Shadow for visibility */
+  box-shadow: -2px 2px 6px rgba(0,0,0,0.3);
+
+  /* Smooth slide-in */
+  transition: right 0.6s ease;
+}
+
+/* Slide in after page load */
+body.loaded #logoutBtn {
+  right: 0;
+  animation: pulse 0.8s ease-in-out 0.7s 1; /* pulse once after 0.7s delay */
+}
+
+/* Hover effect */
+#logoutBtn:hover {
+  background: #45a049;
+}
+
+/* Pulse keyframes */
+@keyframes pulse {
+  0% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.1); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+</style>
+
+<script>
+function logout(){
+  sessionStorage.removeItem("store_logged_in");
+  location.reload();
+}
+
+// Trigger slide-in animation after load
+window.addEventListener("load", () => {
+  document.body.classList.add("loaded");
+});
+</script>
+
+</body>
 </html>
