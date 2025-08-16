@@ -73,7 +73,38 @@ body.dark .low-stock {
   border:1px solid #aa4444;
   color:#ffaaaa;
 }
-    
+/* Welcome Modal */
+.welcome-content {
+  text-align: center;
+  color: white;
+}
+
+.welcome-content .logo {
+  width: 100px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+}
+
+/* Spinner (4 color circular sniper) */
+.spinner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 8px solid transparent;
+  border-top: 8px solid #4CAF50;   /* green */
+  border-right: 8px solid #2196F3; /* blue */
+  border-bottom: 8px solid #FF9800;/* orange */
+  border-left: 8px solid #F44336;  /* red */
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+
+                       
 </style>
 </head>
 <body>
@@ -297,6 +328,46 @@ if ('serviceWorker' in navigator) {
 }
     </script>
 
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2>Admin Login</h2>
+    <input type="password" id="adminPassword" placeholder="Enter password">
+    <button onclick="checkLogin()">Login</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</div>
+
+<!-- Welcome / Booting Modal -->
+<div id="welcomeModal" class="modal" style="display:none;">
+  <div class="welcome-content">
+    <img src="store-logo.png" alt="Store Logo" class="logo">
+    <div class="spinner"></div>
+    <p>Booting system...</p>
+  </div>
+</div>
+    <script>
+function checkLogin(){
+  const input = document.getElementById("adminPassword").value;
+  if(input === ADMIN_PASS){
+    localStorage.setItem("adminSession", "true");
+    document.getElementById("loginModal").style.display = "none";
+
+    // Show welcome modal
+    const welcome = document.getElementById("welcomeModal");
+    welcome.style.display = "flex";
+
+    // Auto hide after 5s
+    setTimeout(()=>{
+      welcome.style.display = "none";
+    }, 5000);
+
+  } else {
+    document.getElementById("loginError").textContent = "Incorrect password!";
+  }
+}
+        
+    </script>
 </body>
 
 </html>
