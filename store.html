@@ -392,37 +392,10 @@ if ('serviceWorker' in navigator) {
     </script>
 
 
-    <!--
-    <script>
-// Define admin password
-const ADMIN_PASS = "Letmein12";
 
-function checkLogin(){
-  const input = document.getElementById("adminPassword").value;
-  if(input === ADMIN_PASS){
-    localStorage.setItem("adminSession", "true");
-    document.getElementById("loginModal").style.display = "none";
+     
 
-    // Show welcome modal
-    const welcome = document.getElementById("welcomeModal");
-    welcome.style.display = "flex";
 
-    // Fade out after 5 seconds
-    setTimeout(()=>{
-      welcome.classList.add("fade-out");
-      setTimeout(()=>{ 
-        welcome.style.display = "none"; 
-        welcome.classList.remove("fade-out"); 
-      }, 1000); // matches fade-out duration
-    }, 5000);
-
-  } else {
-    document.getElementById("loginError").textContent = "Incorrect password!";
-  }
-}
-        
-    </script>
-    -->
 
     
 </body>
