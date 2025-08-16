@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Inventory PWA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  📊 Admin Dashboard
+  <button id="darkModeSwitch">🌙</button>
+</header>
+
+<main>
+  <!-- Filter Sales Section -->
+  <section>
+    <div class="filter-header">
+      <h2>Filter Sales</h2>
+      <div class="filter-actions">
+        <button onclick="goToStore()">To Store</button>
+        <button onclick="logoutAdmin()">Logout</button>
+      </div>
+    </div>
+    <label>Item Name</label>
+    <input type="text" id="filterItemName" placeholder="Search by item name">
+    <label>Date Range</label>
+    <input type="date" id="startDate"> to <input type="date" id="endDate">
+    <button onclick="applyFilters()">Apply Filters</button>
+  </section>
+
+  <!-- Inventory Overview -->
+<section>
+    <h2>Inventory Overview</h2>
+    <div class="table-container">
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Item</th>
+                    <th>In Stock</th>
+                    <th>Sold</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryTableBody"></tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Sales Stats -->
+<section>
+    <h2>Sales Stats</h2>
+    <div class="table-container">
+        <table id="salesStatsTable">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Total Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Today</td>
+                    <td id="dailySales">0</td>
+                </tr>
+                <tr>
+                    <td>This Week</td>
+                    <td id="weeklySales">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+  <!-- Sales Stats -->
+  <section>
+    <h2>Sales Stats</h2>
+    <div class="stats">
+      <div class="stat-box">Total Sales Today: <span id="dailySales">0</span></div>
+      <div class="stat-box">Total Sales This Week: <span id="weeklySales">0</span></div>
+    </div>
+  </section>
+
+  <!-- Sales History -->
+  <section>
+    <h2>Sales History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Item</th>
+          <th>Quantity Sold</th>
+        </tr>
+      </thead>
+      <tbody id="salesHistoryAdmin"></tbody>
+    </table>
+  </section>
+
+  <!-- Export Reports -->
+  <section>
+    <h2>📄 Export Reports</h2>
+    <button onclick="exportInventoryPDF()">Export Inventory to PDF</button>
+    <button onclick="exportSalesPDF()">Export Sales to PDF</button>
+  </section>
+
+</main>
+
+<script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
