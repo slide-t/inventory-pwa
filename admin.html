@@ -53,6 +53,45 @@ body.dark input, body.dark select, body.dark button { background:#333; color:whi
 
 /* Scrollable inventory panel */
 #inventoryPanel { max-height:300px; overflow-y:auto; border:1px solid #ccc; border-radius:5px; }
+
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .filter-actions button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background: #2c3e50;
+    color: white;
+    cursor: pointer;
+  }
+
+  .filter-actions button:hover {
+    background: #34495e;
+  }
+
+  @media (max-width: 600px) {
+    .filter-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .filter-actions {
+      margin-top: 10px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .filter-actions button {
+      width: 100%;
+      margin-left: 0;
+      margin-bottom: 8px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -63,16 +102,48 @@ body.dark input, body.dark select, body.dark button { background:#333; color:whi
 
 <main>
 
-<section>
+
+    
+<!--<section>
 <h2>Filter Sales</h2>
-    <button style="padding:12px 18px;">To Store</button>
+    
 <label>Item Name</label>
 <input type="text" id="filterItemName" placeholder="Search by item name">
 <label>Date Range</label>
 <input type="date" id="startDate"> to <input type="date" id="endDate">
 <button onclick="applyFilters()">Apply Filters</button>
+</section>-->
+<section>
+  <div class="filter-header">
+    <h2>Filter Sales</h2>
+    <div class="filter-actions">
+      <button onclick="goToStore()">To Store</button>
+      <button onclick="logoutAdmin()">Logout</button>
+    </div>
+  </div>
+
+  <label>Item Name</label>
+  <input type="text" id="filterItemName" placeholder="Search by item name">
+
+  <label>Date Range</label>
+  <input type="date" id="startDate"> to <input type="date" id="endDate">
+
+  <button onclick="applyFilters()">Apply Filters</button>
 </section>
 
+
+
+<script>
+  function goToStore() {
+    window.location.href = 'store.html'; // redirect to store page
+  }
+
+  function logoutAdmin() {
+    window.location.href = 'index.html'; // redirect to login/admin access page
+  }
+</script>
+
+    
 <section>
 <h2>Inventory Overview</h2>
 <div id="inventoryPanel">
