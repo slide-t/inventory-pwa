@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory PWA</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #333;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    main {
+      padding: 20px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .btn:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+    input, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    .scanner-container {
+      display: none;
+      margin: 20px 0;
+      text-align: center;
+    }
+    video {
+      width: 100%;
+      max-width: 400px;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+    }
+    .alert {
+      background: #ffc107;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Inventory PWA</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Add Product</h2>
+      <input type="text" id="productName" placeholder="Product Name">
+      <input type="text" id="productCode" placeholder="Barcode / Product Code">
+      <input type="number" id="productQty" placeholder="Quantity">
+      <button class="btn" onclick="addProduct()">Add Product</button>
+    </section>
+
+    <section>
+      <h2>Products</h2>
+      <table id="productTable">
+        <thead>
+          <tr><th>Name</th><th>Code</th><th>Qty</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Sales</h2>
+      <button class="btn" id="startScannerBtn" onclick="startScanner()">Start Camera Scanner</button>
+      <button class="btn" id="stopScannerBtn" onclick="stopScanner()" disabled>Stop Scanner</button>
+      <div class="scanner-container" id="scannerContainer">
+        <video id="scannerPreview"></video>
+      </div>
+      <input type="text" id="manualBarcode" placeholder="Enter or Scan Barcode">
+      <button class="btn" onclick="processSale()">Process Sale</button>
+    </section>
+
+    <section id="alerts"></section>
+  </main>
+
+  <!-- QuaggaJS -->
+  <script src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
+  <script>
+    // IndexedDB setup
+    let db;
+    const request = indexedDB.open("InventoryDB", 1);
+    request.onupgradeneeded = e => {
+      db = e.target.result;
+      let store = db.createObjectStore("products", { keyPath: "code" });
+      store.createIndex("name", "name", { unique: false });
+    };
+    request.onsuccess = e => { db = e.target.result; loadProducts(); };
+    request.onerror = e => console.error("DB Error", e);
+
+    // Add product
+    function addProduct() {
+      let name = document.getElementById("productName").value;
+      let code = document.getElementById("productCode").value;
+      let qty = parseInt(document.getElementById("productQty").value);
+
+      if (!name || !code || !qty) {
+        alert("Fill all fields");
+        return;
+      }
+
+      let tx = db.transaction("products", "readwrite");
+      let store = tx.objectStore("products");
+      store.put({ name, code, qty });
+
+      tx.oncomplete = () => {
+        loadProducts();
+        document.getElementById("productName").value = "";
+        document.getElementById("productCode").value = "";
+        document.getElementById("productQty").value = "";
+      };
+    }
+
+    // Load products
+    function loadProducts() {
+      let tx = db.transaction("products", "readonly");
+      let store = tx.objectStore("products");
+      let req = store.getAll();
+      req.onsuccess = e => {
+        let data = e.target.result;
+        let tbody = document.querySelector("#productTable tbody");
+        tbody.innerHTML = "";
+        data.forEach(item => {
+          let tr = `<tr><td>${item.name}</td><td>${item.code}</td><td>${item.qty}</td></tr>`;
+          tbody.innerHTML += tr;
+          if (item.qty <= 5) {
+            showAlert(`${item.name} is low in stock (Qty: ${item.qty})`);
+          }
+        });
+      };
+    }
+
+    // Process Sale
+    function processSale(code = null) {
+      let barcode = code || document.getElementById("manualBarcode").value;
+      if (!barcode) return alert("Enter or scan barcode");
+
+      let tx = db.transaction("products", "readwrite");
+      let store = tx.objectStore("products");
+      let req = store.get(barcode);
+
+      req.onsuccess = e => {
+        let item = e.target.result;
+        if (!item) return alert("Product not found");
+        if (item.qty <= 0) return alert("Out of stock");
+
+        item.qty--;
+        store.put(item);
+        tx.oncomplete = () => {
+          loadProducts();
+          document.getElementById("manualBarcode").value = "";
+          if (item.qty <= 5) {
+            showAlert(`${item.name} is low in stock (Qty: ${item.qty})`);
+          }
+        };
+      };
+    }
+
+    // Show Alerts
+    function showAlert(msg) {
+      let div = document.createElement("div");
+      div.className = "alert";
+      div.textContent = msg;
+      document.getElementById("alerts").appendChild(div);
+      setTimeout(() => div.remove(), 5000);
+    }
+
+    // Scanner (Camera)
+    function startScanner() {
+      document.getElementById("scannerContainer").style.display = "block";
+      document.getElementById("startScannerBtn").disabled = true;
+      document.getElementById("stopScannerBtn").disabled = false;
+
+      Quagga.init({
+        inputStream: {
+          type: "LiveStream",
+          target: document.querySelector("#scannerPreview")
+        },
+        decoder: {
+          readers: ["code_128_reader", "ean_reader", "upc_reader"]
+        }
+      }, err => {
+        if (err) { console.error(err); return; }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(res => {
+        let code = res.codeResult.code;
+        processSale(code);
+        stopScanner();
+      });
+    }
+
+    function stopScanner() {
+      Quagga.stop();
+      document.getElementById("scannerContainer").style.display = "none";
+      document.getElementById("startScannerBtn").disabled = false;
+      document.getElementById("stopScannerBtn").disabled = true;
+    }
+
+    // USB Scanner Auto-detect (works like keyboard input)
+    document.addEventListener("keypress", e => {
+      if (e.key === "Enter") {
+        let code = document.getElementById("manualBarcode").value;
+        processSale(code);
+      }
+    });
+  </script>
+</body>
+</html>
