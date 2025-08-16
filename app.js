@@ -1,4 +1,14 @@
+// =============================
+// ADMIN SESSION CHECK
+// =============================
+document.addEventListener("DOMContentLoaded", () => {
+  const adminSession = localStorage.getItem("adminSession") || sessionStorage.getItem("adminSession");
 
+  // If no valid session, kick user back to login
+  if (!adminSession) {
+    window.location.replace("index.html");
+  }
+});
 const { jsPDF } = window.jspdf;
 
 // IndexedDB
@@ -149,17 +159,21 @@ document.getElementById('toStoreBtn').addEventListener('click', () => {
 // Logout: clear session and redirect to access/login page
 document.getElementById('logoutBtn').addEventListener('click', (e) => {
   e.preventDefault();
-  // Clear session/local storage items (adjust keys you use)
+
+  // Clear all session/local storage keys related to login
   try {
-    localStorage.removeItem('adminSession'); // example key
+    localStorage.removeItem('adminSession'); 
     sessionStorage.removeItem('adminSession');
-  } catch (err) { /* ignore */ }
+    // Or if you stored other keys like token/password, clear them as well
+    localStorage.clear();
+    sessionStorage.clear();
+  } catch (err) { console.error("Logout cleanup failed", err); }
 
-  // If you maintain cookies, clear relevant cookie(s) here (optional)
-  // document.cookie = 'your_cookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  // Optional: clear cookies if you used them
+  // document.cookie = 'adminSession=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
-  // redirect to login (adjust path)
-  window.location.href = 'index.html';
+  // Now redirect to login page
+  window.location.replace('index.html');  // use replace() to prevent "back" going to admin
 });
 
 
