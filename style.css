@@ -155,4 +155,63 @@ body.dark .btn:hover {
   background-color: #555;
   color: #ffffff;
 }
-    
+/* ---- dark mode detailed overrides ---- */
+body.dark {
+  background-color: #0f1113;
+  color: #e6eef6;
+}
+
+/* headings */
+body.dark header,
+body.dark h1, body.dark h2, body.dark h3, body.dark h4 {
+  color: #fff;
+}
+
+/* Tables */
+body.dark table {
+  background-color: transparent;
+  border-color: #2b2b2b;
+}
+body.dark th {
+  background: #1f2530;      /* darker header */
+  color: #f5f7fa;           /* white-ish header text */
+  border-color: #333;
+}
+body.dark td {
+  background: #14171a;      /* row background */
+  color: #dfe9f3;
+  border-color: #222;
+}
+
+/* stat boxes (if they are .stat-box) */
+body.dark .stat-box {
+  background: #15181b;
+  color: #eaf2ff;
+  border: 1px solid #2a2f33;
+}
+
+/* filter action buttons and general buttons */
+body.dark button,
+body.dark .filter-actions button,
+body.dark .btn {
+  background: #22272b;
+  color: #fff;
+  border: 1px solid #3a4045;
+}
+body.dark button:hover,
+body.dark .filter-actions button:hover {
+  background: #2f363b;
+}
+
+/* keep inputs readable */
+body.dark input, body.dark select, body.dark textarea {
+  background: #182029;
+  color: #e6eef6;
+  border: 1px solid #333;
+}
+
+/* ensure table header sticky text remains visible on scroll */
+body.dark th.sticky {
+  background: #1f2530;
+  color: #fff;
+}    
