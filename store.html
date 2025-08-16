@@ -174,7 +174,50 @@ body.dark .low-stock {
     <p>Booting system...</p>
   </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const loggedIn = localStorage.getItem("adminSession");
+  if (loggedIn === "true") {
+    // Show welcome boot modal each refresh
+    showWelcomeModal();
+  } else {
+    // Show login modal
+    document.getElementById("loginModal").style.display = "flex";
+  }
+});
 
+const ADMIN_PASS = "Letmein12";
+
+function checkLogin(){
+  const input = document.getElementById("adminPassword").value;
+  if(input === ADMIN_PASS){
+    localStorage.setItem("adminSession", "true");
+    document.getElementById("loginModal").style.display = "none";
+    showWelcomeModal();
+  } else {
+    document.getElementById("loginError").textContent = "Incorrect password!";
+  }
+}
+
+function showWelcomeModal(){
+  const welcome = document.getElementById("welcomeModal");
+  welcome.style.display = "flex";
+
+  // Hide after 5s with fade effect
+  setTimeout(()=>{
+    welcome.classList.add("fade-out");
+    setTimeout(()=>{
+      welcome.style.display = "none"; 
+      welcome.classList.remove("fade-out");
+    }, 1000);
+  }, 5000);
+}
+
+function logout(){
+  localStorage.removeItem("adminSession");
+  window.location.reload();
+}
+</script>
     
 <!-- JS Libraries -->
 <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
@@ -381,50 +424,7 @@ function checkLogin(){
     </script>
     -->
 
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const loggedIn = localStorage.getItem("adminSession");
-  if (loggedIn === "true") {
-    // Show welcome boot modal each refresh
-    showWelcomeModal();
-  } else {
-    // Show login modal
-    document.getElementById("loginModal").style.display = "flex";
-  }
-});
-
-const ADMIN_PASS = "Letmein12";
-
-function checkLogin(){
-  const input = document.getElementById("adminPassword").value;
-  if(input === ADMIN_PASS){
-    localStorage.setItem("adminSession", "true");
-    document.getElementById("loginModal").style.display = "none";
-    showWelcomeModal();
-  } else {
-    document.getElementById("loginError").textContent = "Incorrect password!";
-  }
-}
-
-function showWelcomeModal(){
-  const welcome = document.getElementById("welcomeModal");
-  welcome.style.display = "flex";
-
-  // Hide after 5s with fade effect
-  setTimeout(()=>{
-    welcome.classList.add("fade-out");
-    setTimeout(()=>{
-      welcome.style.display = "none"; 
-      welcome.classList.remove("fade-out");
-    }, 1000);
-  }, 5000);
-}
-
-function logout(){
-  localStorage.removeItem("adminSession");
-  window.location.reload();
-}
-</script>
+    
 </body>
 
 </html>
