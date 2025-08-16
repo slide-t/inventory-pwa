@@ -111,3 +111,48 @@ th {
     background: #f2f2f2;
     font-weight: bold;
 }
+/* DARK MODE FIX */
+body.dark {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark h5,
+body.dark h6 {
+  color: #ffffff;
+}
+
+/* Tables */
+body.dark table {
+  border-color: #333;
+}
+
+body.dark th {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+body.dark td {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-color: #444;
+}
+
+/* Buttons */
+body.dark button,
+body.dark .btn {
+  background-color: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+}
+
+body.dark button:hover,
+body.dark .btn:hover {
+  background-color: #555;
+  color: #ffffff;
+}
+    
