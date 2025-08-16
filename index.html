@@ -27,25 +27,28 @@
 </div>
 <script>
     const PASSCODE = "Onlyme12";
-    const SESSION_DURATION = 45 * 60 * 1000; // 45 minutes in ms
+    const SESSION_DURATION = 45 * 60 * 1000; // 45 minutes
 
     // Check session on page load
-    window.onload = function(){
+    window.onload = function () {
         const loginTime = sessionStorage.getItem("admin_login_time");
-        if(loginTime && (new Date().getTime() - loginTime) < SESSION_DURATION){
-            // Session valid
+        if (loginTime && (new Date().getTime() - loginTime) < SESSION_DURATION) {
+            // Session still valid
             window.location.href = "admin.html";
         } else {
-            // Session expired or not logged in
+            // Expired / not logged in
             sessionStorage.removeItem("admin_login_time");
+            sessionStorage.removeItem("adminSession"); // 🔑 clear
         }
     }
 
     function loginAdmin() {
         const input = document.getElementById('adminPass').value;
         const errorDiv = document.getElementById('error');
-        if(input === PASSCODE){
-            sessionStorage.setItem("admin_login_time", new Date().getTime());
+        if (input === PASSCODE) {
+            const now = new Date().getTime();
+            sessionStorage.setItem("admin_login_time", now);
+            sessionStorage.setItem("adminSession", "true"); // 🔑 set session
             window.location.href = "admin.html";
         } else {
             errorDiv.textContent = "Incorrect passcode!";
@@ -55,10 +58,6 @@
     function openStore() {
         window.location.href = "store.html";
     }
-   // Example: when login is successful
-localStorage.setItem("adminSession", "true");
-// or use sessionStorage if you want it cleared after browser close 
 </script>
-    
 </body>
 </html>
