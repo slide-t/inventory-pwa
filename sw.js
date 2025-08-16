@@ -1,5 +1,5 @@
 // sw.js - Service Worker
-const CACHE_NAME = 'inventory-pwa-v4';
+const CACHE_NAME = 'inventory-pwa-v1';
 const FILES_TO_CACHE = [
   '/',
   '/store.html',
