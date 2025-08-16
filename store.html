@@ -277,19 +277,22 @@ if ('serviceWorker' in navigator) {
 #logoutBtn {
   position: fixed;
   top: 50%;
-  right: -40px; /* only the curved end peeks in */
+  right: -35px; /* keep most outside, only curved part inside */
   transform: translateY(-50%);
-  background: #e53935; /* your red color */
+  background: #e53935; /* red */
   color: white;
-  font-size: 20px;
-  padding: 15px; /* smaller, more circular */
+  font-size: 22px;
+  width: 60px;   /* fixed small width */
+  height: 60px;  /* fixed small height */
+  line-height: 60px;
+  text-align: center;
   border: none;
   cursor: pointer;
   z-index: 1000;
 
   /* Half pill shape */
-  border-top-left-radius: 25%;
-  border-bottom-left-radius: 25%;
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
 
   /* Shadow for visibility */
   box-shadow: -2px 2px 6px rgba(0,0,0,0.3);
@@ -315,6 +318,8 @@ body.loaded #logoutBtn {
   50% { transform: translateY(-50%) scale(1.1); }
   100% { transform: translateY(-50%) scale(1); }
 }
+
+  
 </style>
 
 <script>
