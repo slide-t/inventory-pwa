@@ -130,20 +130,7 @@ body.dark input, body.dark select, body.dark button { background:#333; color:whi
 
   <button onclick="applyFilters()">Apply Filters</button>
 </section>
-
-
-
-<script>
-  function goToStore() {
-    window.location.href = 'store.html'; // redirect to store page
-  }
-
-  function logoutAdmin() {
-    window.location.href = 'index.html'; // redirect to login/admin access page
-  }
-</script>
-
-    
+   
 <section>
 <h2>Inventory Overview</h2>
 <div id="inventoryPanel">
@@ -355,5 +342,15 @@ navigator.serviceWorker.register('sw.js')
 });
 }
 </script>
+    <script>
+  function goToStore() {
+    window.location.href = 'store.html'; // redirect to store page
+  }
+
+  function logoutAdmin() {
+    window.location.href = 'index.html'; // redirect to login/admin access page
+  }
+    </script>
+    
 </body>
 </html>
