@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock - DGM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="admin.html">Admin</a>
+    <a href="stock.html">Stock</a>
+    <a href="sales.html">Sales</a>
+  </nav>
+
+  <div class="container">
+    <h1>Available Stock</h1>
+    <div id="lowStockAlerts"></div>
+
+    <div class="panel">
+      <h2>Stock List</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Qty</th>
+              <th>Price (₦)</th>
+            </tr>
+          </thead>
+          <tbody id="stockTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="stock.js"></script>
+</body>
+</html>
