@@ -9,34 +9,34 @@
 <body>
   <!-- Navbar -->
   <nav class="navbar">
-    <a href="admin.html">Admin</a>
-    <a href="stock.html">Stock</a>
-    <a href="sales.html">Sales</a>
+    <div class="logo">DGM</div>
+    <ul class="nav-links">
+      <li><a href="sales.html">Sales</a></li>
+      <li><a href="stock.html" class="active">Stock</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
   </nav>
 
-  <div class="container">
-    <h1>Available Stock</h1>
+  <!-- Stock Panel -->
+  <div class="panel">
+    <h2>Stock List</h2>
     <div id="lowStockAlerts"></div>
-
-    <div class="panel">
-      <h2>Stock List</h2>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Qty</th>
-              <th>Price (₦)</th>
-            </tr>
-          </thead>
-          <tbody id="stockTable"></tbody>
-        </table>
-      </div>
+    
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Qty</th>
+            <th>Price (₦)</th>
+          </tr>
+        </thead>
+        <tbody id="stockTable"></tbody>
+      </table>
     </div>
   </div>
 
-  <script src="db.js"></script>
   <script src="stock.js"></script>
 </body>
 </html>
