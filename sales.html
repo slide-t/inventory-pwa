@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Entry</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    h2 { color: #333; }
+    form { margin-bottom: 20px; }
+    input, button { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    button { cursor: pointer; background: #007bff; color: white; border: none; }
+    button:hover { background: #0056b3; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background: #007bff; color: white; }
+    .spinner { width: 30px; height: 30px; border: 3px solid #ccc; border-top: 3px solid #007bff;
+               border-radius: 50%; animation: spin 1s linear infinite; display: none; margin: auto; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .delete-btn { background: red; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>Sales Entry</h2>
+  <form id="salesForm">
+    <input type="text" id="itemName" placeholder="Item Name" required>
+    <input type="number" id="quantity" placeholder="Quantity" required>
+    <input type="number" id="amount" placeholder="Amount per Item" required>
+    <button type="submit">Add Sale</button>
+  </form>
+
+  <div class="spinner" id="loadingSpinner"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+        <th>Total</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="salesTable"></tbody>
+  </table>
+
+  <script>
+    // Progressive IndexedDB Setup
+    let db;
+    const dbName = "SalesDB";
+    const dbVersion = 1;
+
+    function initDB() {
+      if (!window.indexedDB) {
+        alert("Your browser does not support IndexedDB. Data will not persist after refresh.");
+        return;
+      }
+
+      const request = indexedDB.open(dbName, dbVersion);
+
+      request.onerror = (e) => {
+        console.error("Error opening DB", e);
+      };
+
+      request.onsuccess = (e) => {
+        db = e.target.result;
+        loadSales(); // Load sales from DB
+      };
+
+      request.onupgradeneeded = (e) => {
+        db = e.target.result;
+        if (!db.objectStoreNames.contains("sales")) {
+          db.createObjectStore("sales", { keyPath: "id", autoIncrement: true });
+        }
+      };
+    }
+
+    function addSaleToDB(sale) {
+      const tx = db.transaction("sales", "readwrite");
+      const store = tx.objectStore("sales");
+      store.add(sale);
+      tx.oncomplete = () => loadSales();
+    }
+
+    function deleteSaleFromDB(id) {
+      const tx = db.transaction("sales", "readwrite");
+      const store = tx.objectStore("sales");
+      store.delete(id);
+      tx.oncomplete = () => loadSales();
+    }
+
+    function loadSales() {
+      const salesTable = document.getElementById("salesTable");
+      salesTable.innerHTML = "";
+
+      const tx = db.transaction("sales", "readonly");
+      const store = tx.objectStore("sales");
+      store.openCursor().onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          const { id, itemName, quantity, amount, date } = cursor.value;
+          const total = quantity * amount;
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${itemName}</td>
+            <td>${quantity}</td>
+            <td>₦${amount.toLocaleString()}</td>
+            <td>₦${total.toLocaleString()}</td>
+            <td>${date}</td>
+            <td><button class="delete-btn" onclick="deleteSale(${id})">Delete</button></td>
+          `;
+          salesTable.appendChild(row);
+
+          cursor.continue();
+        }
+      };
+    }
+
+    function deleteSale(id) {
+      deleteSaleFromDB(id);
+    }
+
+    document.getElementById("salesForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const spinner = document.getElementById("loadingSpinner");
+      spinner.style.display = "block";
+
+      const itemName = document.getElementById("itemName").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+      const amount = parseFloat(document.getElementById("amount").value);
+      const date = new Date().toLocaleString();
+
+      const sale = { itemName, quantity, amount, date };
+
+      setTimeout(() => {
+        addSaleToDB(sale);
+        spinner.style.display = "none";
+        document.getElementById("salesForm").reset();
+      }, 700);
+    });
+
+    // Initialize DB
+    initDB();
+  </script>
+
+</body>
+</html>
