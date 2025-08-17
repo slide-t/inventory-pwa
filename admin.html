@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - DGM</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      background: #001219;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #003049;
+      padding: 10px;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #001219;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    form input, form button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    form button {
+      grid-column: span 2;
+      background: #001219;
+      color: white;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #003049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    table th {
+      background: #003049;
+      color: white;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .edit { color: green; }
+    .delete { color: red; }
+    @media(max-width:600px) {
+      form { grid-template-columns: 1fr; }
+      nav { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>DGM Admin Dashboard</header>
 
+  <nav>
+    <a href="admin.html">Admin</a>
+    <a href="stock.html">Stock</a>
+    <a href="sales.html">Sales</a>
+  </nav>
+
+  <div class="container">
+    <h2>Manage Products</h2>
+    <form id="productForm">
+      <input type="hidden" id="productId">
+      <input type="text" id="productName" placeholder="Product Name" required>
+      <input type="number" id="productPrice" placeholder="Price (₦)" required>
+      <input type="number" id="productQty" placeholder="Quantity" required>
+      <button type="submit">Save Product</button>
+    </form>
+
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price (₦)</th>
+          <th>Qty</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Open IndexedDB
+    let db;
+    const request = indexedDB.open("DGMdb", 1);
+
+    request.onupgradeneeded = e => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("products")) {
+        db.createObjectStore("products", { keyPath: "id", autoIncrement: true });
+      }
+    };
+
+    request.onsuccess = e => {
+      db = e.target.result;
+      displayProducts();
+    };
+
+    request.onerror = e => {
+      console.error("DB error:", e.target.errorCode);
+    };
+
+    // Add or Update Product
+    document.getElementById("productForm").onsubmit = e => {
+      e.preventDefault();
+      const id = document.getElementById("productId").value;
+      const name = document.getElementById("productName").value;
+      const price = parseFloat(document.getElementById("productPrice").value);
+      const qty = parseInt(document.getElementById("productQty").value);
+
+      const tx = db.transaction("products", "readwrite");
+      const store = tx.objectStore("products");
+
+      const product = { name, price, qty };
+      if (id) {
+        product.id = parseInt(id);
+        store.put(product);
+      } else {
+        store.add(product);
+      }
+
+      tx.oncomplete = () => {
+        document.getElementById("productForm").reset();
+        displayProducts();
+      };
+    };
+
+    // Display Products
+    function displayProducts() {
+      const tbody = document.querySelector("#productTable tbody");
+      tbody.innerHTML = "";
+
+      const tx = db.transaction("products", "readonly");
+      const store = tx.objectStore("products");
+      store.openCursor().onsuccess = e => {
+        const cursor = e.target.result;
+        if (cursor) {
+          const { id, name, price, qty } = cursor.value;
+          tbody.innerHTML += `
+            <tr>
+              <td>${name}</td>
+              <td>₦${price}</td>
+              <td>${qty}</td>
+              <td>
+                <button class="action-btn edit" onclick="editProduct(${id})"><i class="fas fa-edit"></i></button>
+                <button class="action-btn delete" onclick="deleteProduct(${id})"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+          `;
+          cursor.continue();
+        }
+      };
+    }
+
+    // Edit Product
+    function editProduct(id) {
+      const tx = db.transaction("products", "readonly");
+      const store = tx.objectStore("products");
+      const req = store.get(id);
+      req.onsuccess = () => {
+        const p = req.result;
+        document.getElementById("productId").value = p.id;
+        document.getElementById("productName").value = p.name;
+        document.getElementById("productPrice").value = p.price;
+        document.getElementById("productQty").value = p.qty;
+      };
+    }
+
+    // Delete Product
+    function deleteProduct(id) {
+      const tx = db.transaction("products", "readwrite");
+      const store = tx.objectStore("products");
+      store.delete(id);
+      tx.oncomplete = () => displayProducts();
+    }
+  </script>
+</body>
+</html>
